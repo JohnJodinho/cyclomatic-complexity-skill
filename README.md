@@ -1,49 +1,109 @@
 # cyclomatic-complexity
 
-A Claude skill that refactors code to reduce cyclomatic complexity. Built for AI-generated code: it works, but branches like a jungle. This skill makes Claude measure complexity, refactor hotspots, and keep code maintainable for humans and the long-term vision of the codebase.
+A **Google Antigravity** skill that refactors code to reduce cyclomatic complexity. Built to tame sprawling, heavily branched code—keeping it readable, maintainable, and aligned with clean architecture.
 
-## What it does
+---
 
-- Measures cyclomatic complexity per function (radon, eslint, gocyclo, lizard, or manual count)
-- Respects your project's own linter thresholds when configured
-- Refactors worst hotspots first: guard clauses, extract function, lookup tables, named predicates
-- Refuses to game the metric. Complexity moves into well-named functions, not into clever one-liners
-- Ends every refactor with a before/after complexity table
+## What It Does
 
-## Install
+- **Measures cyclomatic complexity per function**: Uses the bundled zero-dependency Python analyzer (`scripts/measure_complexity.py`), project linters (`radon`, `eslint`, `gocyclo`, `lizard`), or manual count.
+- **Enterprise File Length Threshold (<= 500 lines)**: Monitors total lines of code per file. Prevents replacing a "god function" with a bloated "god file". When helper extraction pushes a file toward or beyond 500 lines, it guides modular extraction into cohesive submodules.
+- **Respects project thresholds**: Adheres to existing linter configurations or industry defaults (1–5 clean, 6–10 watch, 11–15 refactor, 16+ split).
+- **Refactors hotspots worst-first**: Applies guard clauses, helper extraction, lookup tables, and named predicates.
+- **Python Comment Discipline**:
+  - **Docstrings over comments**: Strictly adheres to PEP 257 docstrings for functions, classes, and modules so code purpose is clear at a glance.
+  - **Zero redundant agent noise**: Completely eliminates AI narration comments (`# step 1: initialize`, `# loop through items`, `# return early`).
+  - **Minimal `#` comments**: Inline `#` comments are strictly restricted to rare cases where removal could cause bugs or break tooling (e.g. `# type: ignore`).
+- **Refuses to game metrics**: Complexity moves into well-named, single-responsibility functions, not dense ternary one-liners.
+- **Before/after complexity reporting**: Concludes every refactor with a clear quantitative breakdown of CC scores and file line count.
 
-### Claude Code
+---
 
+## Installation
+
+### 1. One-Line Quick Install (Global)
+
+Installs the skill directly to your Antigravity global configuration (`~/.gemini/config/skills/cyclomatic-complexity`).
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/JohnJodinho/cyclomatic-complexity-skill/master/install.ps1 | iex
 ```
-/plugin marketplace add saurabhkumar8112/cyclomatic-complexity-skill
-/plugin install cyclomatic-complexity@cyclomatic-complexity-skill
+
+**Linux / macOS (Bash):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/JohnJodinho/cyclomatic-complexity-skill/master/install.sh | bash
 ```
 
-### Claude.ai
+---
 
-Download the `.skill` file from Releases (or zip the `skills/cyclomatic-complexity` folder) and upload it under Settings → Capabilities → Skills.
+### 2. Manual Git Clone
 
-### Claude API
+#### Global Installation (Available across all projects)
 
-Upload via the [Skills API](https://docs.claude.com/en/api/skills-guide).
-
-## Usage
-
-Triggers automatically on refactoring, cleanup, and code review requests. Or invoke directly:
-
-> "Use the cyclomatic complexity skill to refactor parser.py"
-
-## Example output
-
+**Linux / macOS:**
+```bash
+git clone https://github.com/JohnJodinho/cyclomatic-complexity-skill.git ~/.gemini/config/skills/cyclomatic-complexity
 ```
+
+**Windows (PowerShell):**
+```powershell
+git clone https://github.com/JohnJodinho/cyclomatic-complexity-skill.git "$HOME\.gemini\config\skills\cyclomatic-complexity"
+```
+
+#### Workspace Installation (Project-scoped)
+
+Clone into your repository's `.agents/skills` directory:
+
+```bash
+git clone https://github.com/JohnJodinho/cyclomatic-complexity-skill.git .agents/skills/cyclomatic-complexity
+```
+
+---
+
+## Usage in Antigravity
+
+Antigravity uses **progressive disclosure**. Once installed, the agent automatically activates the skill whenever you discuss refactoring, code quality, or complexity.
+
+You can trigger it naturally:
+
+> *"Refactor `parser.py` using cyclomatic complexity."*  
+> *"Clean up this spaghetti code and reduce branching."*  
+> *"Review code quality and god functions in this module before merging."*
+
+---
+
+## Example Output
+
+```markdown
 ## Complexity report
+- **File line count**: 320 lines (Enterprise ceiling: <= 500 lines)
+
 | Function | Before | After |
 |----------|--------|-------|
-| parseOrder | 14 | 4 |
+| parse_order | 14 | 4 |
+| validate_header (extracted) | - | 2 |
+| resolve_discount (extracted) | - | 2 |
 
-Extracted: validateHeader, resolveDiscount
-Behavior verified: existing test suite passes
+Extracted: validate_header, resolve_discount
+Behavior verified: existing test suite passes (18/18 tests green)
 ```
+
+---
+
+## Uninstallation
+
+**Windows (PowerShell):**
+```powershell
+.\uninstall.ps1
+```
+
+**Linux / macOS (Bash):**
+```bash
+./uninstall.sh
+```
+
+---
 
 ## License
 

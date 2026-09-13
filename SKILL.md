@@ -23,7 +23,7 @@ Refactor complex code to reduce cyclomatic complexity while keeping it human-mai
 
 ### Tooling
 Prefer automated analyzers over manual counting:
-- **Python**: Use bundled helper [scripts/measure_complexity.py](../../scripts/measure_complexity.py) (zero dependencies) or `radon cc -s -a <path>`
+- **Python**: Use bundled helper [scripts/measure_complexity.py](./scripts/measure_complexity.py) (zero dependencies) or `radon cc -s -a <path>`
 - **JavaScript / TypeScript**: ESLint `complexity` rule / `max-lines`
 - **Go**: `gocyclo <path>`
 - **Polyglot / Multi-language**: `lizard <path>`
